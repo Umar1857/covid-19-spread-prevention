@@ -4,6 +4,8 @@ namespace App\Services\Store\Location;
 
 use App\Repositories\Store\Location\LocationRepository;
 use App\Services\BaseService;
+use Illuminate\Support\Facades\DB;
+use  App\Services\Shopper\ShopperService;
 
 /**
  * Class LocationService
@@ -15,14 +17,16 @@ class LocationService extends BaseService
      * @var LocationRepository
      */
     protected $location;
+    protected $shopperService;
 
     /**
      * LocationService constructor.
      * @param LocationRepository $location
      */
-    public function __construct(LocationRepository $location)
+    public function __construct(LocationRepository $location, ShopperService $shopperService)
     {
         $this->location = $location;
+        $this->shopperService = $shopperService;
         parent::__construct($this->location);
     }
 
@@ -32,7 +36,7 @@ class LocationService extends BaseService
      */
     public function getShoppers(array $data = null): ?array
     {
-        if( $data === null ){
+        if ($data === null) {
             return null;
         }
 
@@ -53,7 +57,7 @@ class LocationService extends BaseService
     private function filterShoppersByStatus(array $data, string $status): array
     {
         return collect($data)->filter(function ($value, $key) use ($status) {
-            if( isset($value['status']['name']) && $value['status']['name'] === $status ){
+            if (isset($value['status']['name']) && $value['status']['name'] === $status) {
                 return $value;
             }
         })
@@ -64,5 +68,20 @@ class LocationService extends BaseService
                 return $collection->sortBy('check_in');
             })
             ->toArray();
+    }
+
+
+    public function updateLimit($location_id, $limit)
+    {
+        DB::beginTransaction();
+        try {
+            $this->location->update($location_id, ['shopper_limit' => $limit]);
+            $this->shopperService->reviseQueue($location_id, $limit);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
+        }
     }
 }

@@ -41,9 +41,9 @@ class BaseRepository implements Repository
         array $where = null,
         array $whereNot = null,
         array $with = null,
-        $orderBy = null,
-        $groupBy = null,
-        int $limit = null
+              $orderBy = null,
+              $groupBy = null,
+        int   $limit = null
     ): ?array
     {
         $query = $this->model;
@@ -51,8 +51,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain where clauses
          */
-        if ( $select !== null && is_array($select) ){
-            foreach ($select as $value){
+        if ($select !== null && is_array($select)) {
+            foreach ($select as $value) {
                 $query = $query->addSelect($value);
             }
         }
@@ -60,8 +60,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain where clauses
          */
-        if ( $where !== null && is_array($where) ){
-            foreach ($where as $key => $value){
+        if ($where !== null && is_array($where)) {
+            foreach ($where as $key => $value) {
                 $query = $query->where($key, '=', $value);
             }
         }
@@ -69,8 +69,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain where no clauses
          */
-        if ( $whereNot !== null && is_array($whereNot) ){
-            foreach ($whereNot as $key => $value){
+        if ($whereNot !== null && is_array($whereNot)) {
+            foreach ($whereNot as $key => $value) {
                 $query = $query->where($key, '!=', $value);
             }
         }
@@ -78,8 +78,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain eager loaded relationships
          */
-        if ( $with !== null && is_array($with) ){
-            foreach ($with as $value){
+        if ($with !== null && is_array($with)) {
+            foreach ($with as $value) {
                 $query = $query->with($value);
             }
         }
@@ -87,16 +87,14 @@ class BaseRepository implements Repository
         /**
          * @desc Chain order by clauses
          */
-        if( $orderBy !== null ){
-            switch( gettype($orderBy) )
-            {
+        if ($orderBy !== null) {
+            switch (gettype($orderBy)) {
                 case 'string':
                     $query = $query->orderBy($orderBy);
                     break;
                 case 'array':
-                    foreach( $orderBy as $key => $value )
-                    {
-                        $query = $query->orderBy( $key, $value );
+                    foreach ($orderBy as $key => $value) {
+                        $query = $query->orderBy($key, $value);
                     }
                     break;
             }
@@ -105,16 +103,14 @@ class BaseRepository implements Repository
         /**
          * @desc Chain order by clauses
          */
-        if( $groupBy !== null ){
-            switch( gettype($groupBy) )
-            {
+        if ($groupBy !== null) {
+            switch (gettype($groupBy)) {
                 case 'string':
                     $query = $query->groupBy($groupBy);
                     break;
                 case 'array':
-                    foreach( $groupBy as $value )
-                    {
-                        $query = $query->groupBy( $value );
+                    foreach ($groupBy as $value) {
+                        $query = $query->groupBy($value);
                     }
                     break;
             }
@@ -123,7 +119,7 @@ class BaseRepository implements Repository
         /**
          * @desc Chain eager loaded relationships
          */
-        if ( $limit !== null && is_int($limit) ){
+        if ($limit !== null && is_int($limit)) {
             $query = $query->limit($limit);
         }
 
@@ -177,7 +173,7 @@ class BaseRepository implements Repository
      * @return bool
      */
     public function update(
-        int $id,
+        int   $id,
         array $data
     ): bool
     {
@@ -189,7 +185,32 @@ class BaseRepository implements Repository
 
             return true;
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $uuid
+     * @param array $data
+     * @return bool
+     */
+    public function updateByUuid(
+        string $uuid,
+        array  $data
+    ): bool
+    {
+        try {
+
+            $this->model->where(
+                'uuid', $uuid
+            )->update($data);
+
+            return true;
+
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
 
@@ -202,7 +223,7 @@ class BaseRepository implements Repository
      * @return bool
      */
     public function increment(
-        int $id,
+        int    $id,
         string $column
     ): bool
     {
@@ -216,7 +237,7 @@ class BaseRepository implements Repository
 
             return true;
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
 
@@ -268,7 +289,7 @@ class BaseRepository implements Repository
     public function show(
         array $where,
         array $with = null,
-        $orderBy = null
+              $orderBy = null
     ): ?array
     {
         $query = $this->model;
@@ -276,8 +297,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain where clauses
          */
-        if ( $where !== null && is_array($where) ){
-            foreach ($where as $key => $value){
+        if ($where !== null && is_array($where)) {
+            foreach ($where as $key => $value) {
                 $query = $query->where($key, '=', $value);
             }
         }
@@ -285,8 +306,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain eager loaded relationships
          */
-        if ( $with !== null && is_array($with) ){
-            foreach ($with as $value){
+        if ($with !== null && is_array($with)) {
+            foreach ($with as $value) {
                 $query = $query->with($value);
             }
         }
@@ -294,16 +315,14 @@ class BaseRepository implements Repository
         /**
          * @desc Chain order by clauses
          */
-        if( $orderBy !== null ){
-            switch( gettype($orderBy) )
-            {
+        if ($orderBy !== null) {
+            switch (gettype($orderBy)) {
                 case 'string':
                     $query = $query->orderBy($orderBy);
                     break;
                 case 'array':
-                    foreach( $orderBy as $key => $value )
-                    {
-                        $query = $query->orderBy( $key, $value );
+                    foreach ($orderBy as $key => $value) {
+                        $query = $query->orderBy($key, $value);
                     }
                     break;
             }
@@ -329,7 +348,7 @@ class BaseRepository implements Repository
         /**
          * @desc Chain where clauses
          */
-        if ( $select !== null && is_array($select) ){
+        if ($select !== null && is_array($select)) {
             $columns = implode(',', $select);
             $query = $query->select($select);
         }
@@ -337,8 +356,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain where clauses
          */
-        if ( $where !== null && is_array($where) ){
-            foreach ($where as $key => $value){
+        if ($where !== null && is_array($where)) {
+            foreach ($where as $key => $value) {
                 $query = $query->where($key, '=', $value);
             }
         }
@@ -357,7 +376,7 @@ class BaseRepository implements Repository
     public function count(
         array $where = null,
         array $with = null,
-        $orderBy = null
+              $orderBy = null
     )
     {
         $query = $this->model;
@@ -365,8 +384,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain where clauses
          */
-        if ( $where !== null && is_array($where) ){
-            foreach ($where as $key => $value){
+        if ($where !== null && is_array($where)) {
+            foreach ($where as $key => $value) {
                 $query = $query->where($key, '=', $value);
             }
         }
@@ -374,8 +393,8 @@ class BaseRepository implements Repository
         /**
          * @desc Chain eager loaded relationships
          */
-        if ( $with !== null && is_array($with) ){
-            foreach ($with as $value){
+        if ($with !== null && is_array($with)) {
+            foreach ($with as $value) {
                 $query = $query->with($value);
             }
         }
@@ -383,16 +402,14 @@ class BaseRepository implements Repository
         /**
          * @desc Chain order by clauses
          */
-        if( $orderBy !== null ){
-            switch( gettype($orderBy) )
-            {
+        if ($orderBy !== null) {
+            switch (gettype($orderBy)) {
                 case 'string':
                     $query = $query->orderBy($orderBy);
                     break;
                 case 'array':
-                    foreach( $orderBy as $key => $value )
-                    {
-                        $query = $query->orderBy( $key, $value );
+                    foreach ($orderBy as $key => $value) {
+                        $query = $query->orderBy($key, $value);
                     }
                     break;
             }
@@ -407,7 +424,7 @@ class BaseRepository implements Repository
      */
     private function toArray($collection): ?array
     {
-        if( empty($collection) ){
+        if (empty($collection)) {
             return null;
         }
 

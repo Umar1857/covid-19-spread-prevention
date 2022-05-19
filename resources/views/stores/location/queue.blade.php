@@ -4,67 +4,77 @@
             @if( isset($location['location_name']))
                 {{ __( $location['location_name'] . ' Shoppers') }}
             @endif
+            <button style="float:right" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">Limit
+            </button>
+
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-                    <table class="w-full whitespace-no-wrapw-full whitespace-no-wrap mt-6">
-                        <thead>
-                        <tr>
-                            <th>
-                                Status
-                            </th>
-                            <th>
-                                Shopper Name
-                            </th>
-                            <th>
-                                Email
-                            </th>
-                            <th>
-                                Check-In
-                            </th>
-                            <th>
-                                Check-Out
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @if( isset( $shoppers['active'] ) && is_iterable( $shoppers['active'] ) )
-                            @if( count( $shoppers['active'] )  >= 1 )
-                                @foreach( $shoppers['active'] as $shopper )
-                                    <tr class="text-center">
-                                        <x-shopper.listing :shopper="$shopper"/>
-                                    </tr>
-                                @endforeach
-                            @endif
-                        @endif
-                        @if( isset( $shoppers['pending'] ) && is_iterable( $shoppers['pending'] ) )
-                            @if( count( $shoppers['pending'] )  >= 1 )
-                                @foreach( $shoppers['pending'] as $shopper )
-                                    <tr class="text-center">
-                                        <x-shopper.listing :shopper="$shopper"/>
-                                    </tr>
-                                @endforeach
-                            @endif
-                        @endif
-                        @if( isset( $shoppers['completed'] ) && is_iterable( $shoppers['completed'] ) )
-                            @if( count( $shoppers['completed'] )  >= 1 )
-                                @foreach( $shoppers['completed'] as $shopper )
-                                    <tr class="text-center">
-                                        <x-shopper.listing :shopper="$shopper"/>
-                                    </tr>
-                                @endforeach
-                            @endif
-                        @endif
-                        </tbody>
-                    </table>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Store limit</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form method="post" action="{{ route('store.location.update',['id'=>$location["id"]]) }}">
+                        <input type="hidden" value="PUT" name="_method">
+                        @csrf
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="firstName">
+                                Limit
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="limit" name="limit" type="text" value="<?=$location['shopper_limit']?>"
+                                placeholder="Limit">
+                        </div>
+
+                        @if ($errors->any())
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                                 role="alert">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                    @endif
+
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit">
+                        Change
+                    </button>
+                </div>
+                </form>
+
+
             </div>
         </div>
     </div>
 
+    @include('components.store.locations.queue')
+
+    </div>
+    </div>
+    </div>
+    </div>
+    @if ($message = Session::get('success'))
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <script>
+            const socket = io('http://localhost:4001', {transports: ['websocket']});
+            socket.emit('notification', 'Emit');
+        </script>
+    @endif
 </x-app-layout>

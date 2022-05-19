@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClosureController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Shopper\ShopperQueueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [ClosureController::class, 'index']);
+//Route::get('/', [ClosureController::class, 'index']);
+Route::get('/', [ShopperQueueController::class, 'create']);
+Route::get('public/store/locations/{store}', [ShopperQueueController::class, 'storeLocations'])->name('public.store.locations');
+Route::get('public/queue/{storeUuid}/{locationUuid}', [ShopperQueueController::class, 'queues'])->name('public.location.queue');
+Route::post('store/checkin', [ShopperQueueController::class, 'addShopperToQueue'])->name('store.checkin');
+
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
@@ -30,3 +36,4 @@ Route::namespace('Store')
     ->prefix('sign-in')
     ->name('public.')
     ->group(__DIR__ . '/Store/Location/public.php');
+

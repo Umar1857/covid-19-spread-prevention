@@ -37,9 +37,9 @@ class BaseService implements Service
         array $where = null,
         array $whereNot = null,
         array $with = null,
-        $orderBy = null,
-        $groupBy = null,
-        int $limit = null
+              $orderBy = null,
+              $groupBy = null,
+        int   $limit = null
     )
     {
         return $this->repository->all($select, $where, $whereNot, $with, $orderBy, $groupBy, $limit);
@@ -62,11 +62,24 @@ class BaseService implements Service
      * @return bool
      */
     public function update(
-        int $id,
+        int   $id,
         array $data
     ): bool
     {
         return $this->repository->update($id, $data);
+    }
+
+    /**
+     * @param string $uuid
+     * @param array $data
+     * @return bool
+     */
+    public function updateByUuid(
+        string $uuid,
+        array  $data
+    ): bool
+    {
+        return $this->repository->updateByUuid($uuid, $data);
     }
 
     /**
@@ -75,7 +88,7 @@ class BaseService implements Service
      * @return bool
      */
     public function increment(
-        int $id,
+        int    $id,
         string $column
     ): bool
     {
@@ -121,7 +134,7 @@ class BaseService implements Service
     public function show(
         array $where,
         array $with = null,
-        $orderBy = null
+              $orderBy = null
     )
     {
         return $this->repository->show($where, $with, $orderBy);
@@ -149,7 +162,7 @@ class BaseService implements Service
     public function count(
         array $where = null,
         array $with = null,
-        $orderBy = null
+              $orderBy = null
     )
     {
         return $this->repository->count($where, $with, $orderBy);

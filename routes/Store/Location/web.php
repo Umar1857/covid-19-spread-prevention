@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Shopper\ShopperQueueController;
 use App\Http\Controllers\Store\Location\LocationController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,8 @@ Route::name('save')
 
 Route::name('queue')
     ->get('/{locationUuid}', [LocationController::class, 'queue']);
+Route::name('locations')
+    ->get('/locations/{locationUuid}', [LocationController::class, 'queue']);
+
+
+    

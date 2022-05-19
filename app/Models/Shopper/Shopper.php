@@ -15,6 +15,9 @@ class Shopper extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable=[
+        'first_name','last_name','email','check_in','location_id','status_id','active_at'
+    ];
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

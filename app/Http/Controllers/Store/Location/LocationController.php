@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Store\Location;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Store\Location\LocationCreateRequest;
 use App\Http\Requests\Store\Location\LocationQueueRequest;
 use App\Http\Requests\Store\Location\LocationStoreRequest;
 use App\Models\Store\Location\Location;
 use App\Services\Store\Location\LocationService;
+use Illuminate\Support\Facades\URL;
 
 /**
  * Class LocationController
@@ -66,6 +68,14 @@ class LocationController extends Controller
         return redirect()->route('store.store', ['store' => $storeUuid]);
     }
 
+    public function update($id, Request $request)
+    {
+        if ($this->location->updateLimit($id, $request->limit)) {
+            return redirect(URL::previous())->with('success', 'Limit Updated Successfully!');
+        }
+        return redirect()->back()->with('failed', 'Something went wrong!');
+    }
+
     /**
      * @param LocationQueueRequest $request
      * @param string $storeUuid
@@ -86,10 +96,9 @@ class LocationController extends Controller
 
         $shoppers = null;
 
-        if( isset($location['shoppers']) && count($location['shoppers']) >= 1 ){
+        if (isset($location['shoppers']) && count($location['shoppers']) >= 1) {
             $shoppers = $this->location->getShoppers($location['shoppers']);
-        }
-
+        };
         return view('stores.location.queue')
             ->with('location', $location)
             ->with('shoppers', $shoppers);

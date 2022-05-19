@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Shopper\ShopperQueueController;
+use App\Http\Controllers\Store\Location\LocationController;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +27,14 @@ Route::name('save')
 
 Route::name('store')
     ->get('/{store}', [StoreController::class, 'show']);
+
+Route::name('locations')
+    ->get('/locations/{store}', [ShopperQueueController::class, 'storeLocations']);
+
+Route::name('markAsComplete')
+    ->get('/markAsComplete/{shopperUuid}', [ShopperQueueController::class, 'markAsComplete']);
+Route::name('location.update')
+    ->put('/location/update/{id}', [LocationController::class, 'update']);
 
 Route::namespace('Location')
     ->prefix('{storeUuid}/location')
